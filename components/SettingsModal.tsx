@@ -49,21 +49,31 @@ const ProfileEditor: React.FC<{
             
             <div>
                 <label className="block text-sm font-medium text-[var(--color-text-subtle)]">Name</label>
-                <input type="text" value={profile.name} onChange={e => onChange('name', e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)]" />
+                <input 
+                    type="text" 
+                    value={profile.name} 
+                    onChange={e => onChange('name', e.target.value)} 
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)] px-3 py-2 border focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" 
+                />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-[var(--color-text-subtle)]">Age</label>
-                    <input type="number" value={profile.age} onChange={e => onChange('age', parseInt(e.target.value) || 0)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)]" />
+                    <input 
+                        type="number" 
+                        value={profile.age} 
+                        onChange={e => onChange('age', parseInt(e.target.value) || 0)} 
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)] px-3 py-2 border focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" 
+                    />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-[var(--color-text-subtle)]">Weight ({unitSystem === 'imperial' ? 'lbs' : 'kg'})</label>
                     <input 
                         type="number" 
-                        value={unitSystem === 'imperial' ? kgToLbs(profile.weight) : profile.weight} 
+                        value={unitSystem === 'imperial' ? Math.round(kgToLbs(profile.weight)) : profile.weight} 
                         onChange={e => onChange('weight', unitSystem === 'imperial' ? lbsToKg(parseFloat(e.target.value)) : parseFloat(e.target.value) || 0)} 
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)]" 
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)] px-3 py-2 border focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" 
                     />
                 </div>
             </div>
@@ -72,25 +82,52 @@ const ProfileEditor: React.FC<{
                 <label className="block text-sm font-medium text-[var(--color-text-subtle)]">Height ({unitSystem === 'imperial' ? 'ft, in' : 'cm'})</label>
                 {unitSystem === 'imperial' ? (
                     <div className="grid grid-cols-2 gap-4 mt-1">
-                        <input type="number" placeholder="ft" value={height.ft} onChange={e => {
-                            const newHeight = { ...height, ft: e.target.value };
-                            setHeight(newHeight);
-                            onChange('height', ftInToCm(Number(newHeight.ft), Number(newHeight.in)));
-                        }} className="block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)]" />
-                        <input type="number" placeholder="in" value={height.in} onChange={e => {
-                            const newHeight = { ...height, in: e.target.value };
-                            setHeight(newHeight);
-                            onChange('height', ftInToCm(Number(newHeight.ft), Number(newHeight.in)));
-                        }} className="block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)]" />
+                        <input 
+                            type="number" 
+                            placeholder="ft" 
+                            value={height.ft} 
+                            min="0"
+                            max="8"
+                            onChange={e => {
+                                const newHeight = { ...height, ft: e.target.value };
+                                setHeight(newHeight);
+                                onChange('height', ftInToCm(Number(newHeight.ft), Number(newHeight.in)));
+                            }} 
+                            className="block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)] px-3 py-2 border focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" 
+                        />
+                        <input 
+                            type="number" 
+                            placeholder="in" 
+                            value={height.in} 
+                            min="0"
+                            max="11"
+                            onChange={e => {
+                                const value = parseInt(e.target.value) || 0;
+                                const clampedValue = Math.min(11, Math.max(0, value));
+                                const newHeight = { ...height, in: String(clampedValue) };
+                                setHeight(newHeight);
+                                onChange('height', ftInToCm(Number(newHeight.ft), Number(newHeight.in)));
+                            }} 
+                            className="block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)] px-3 py-2 border focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" 
+                        />
                     </div>
                 ) : (
-                    <input type="number" value={profile.height} onChange={e => onChange('height', parseInt(e.target.value) || 0)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)]" />
+                    <input 
+                        type="number" 
+                        value={profile.height} 
+                        onChange={e => onChange('height', parseInt(e.target.value) || 0)} 
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)] px-3 py-2 border focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" 
+                    />
                 )}
             </div>
             
             <div>
                 <label className="block text-sm font-medium text-[var(--color-text-subtle)]">Activity Level</label>
-                <select value={profile.activityLevel} onChange={e => onChange('activityLevel', e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)]">
+                <select 
+                    value={profile.activityLevel} 
+                    onChange={e => onChange('activityLevel', e.target.value)} 
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)] px-3 py-2 border focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                >
                     <option value="sedentary">Sedentary</option>
                     <option value="light">Lightly active</option>
                     <option value="moderate">Moderately active</option>
@@ -100,7 +137,11 @@ const ProfileEditor: React.FC<{
             </div>
             <div>
                 <label className="block text-sm font-medium text-[var(--color-text-subtle)]">Primary Goal</label>
-                <select value={profile.goal} onChange={e => onChange('goal', e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)]">
+                <select 
+                    value={profile.goal} 
+                    onChange={e => onChange('goal', e.target.value)} 
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-[var(--color-background)] px-3 py-2 border focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                >
                     <option value="lose">Weight Loss</option>
                     <option value="maintain">Maintain Weight</option>
                     <option value="gain">Muscle Gain</option>
@@ -110,9 +151,14 @@ const ProfileEditor: React.FC<{
                 <label className="block text-sm font-medium text-[var(--color-text-subtle)] mb-2">Dietary Restrictions</label>
                 <div className="grid grid-cols-2 gap-2">
                     {DIETARY_RESTRICTIONS.map(r => (
-                        <label key={r.id} className="flex items-center">
-                            <input type="checkbox" checked={profile.dietaryRestrictions.includes(r.id)} onChange={() => handleDietaryChange(r.id)} className="rounded" />
-                            <span className="ml-2 text-sm">{r.label}</span>
+                        <label key={r.id} className="flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded transition-colors">
+                            <input 
+                                type="checkbox" 
+                                checked={profile.dietaryRestrictions.includes(r.id)} 
+                                onChange={() => handleDietaryChange(r.id)} 
+                                className="rounded border-gray-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)] cursor-pointer w-4 h-4" 
+                            />
+                            <span className="ml-2 text-sm select-none">{r.label}</span>
                         </label>
                     ))}
                 </div>
@@ -170,20 +216,30 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, onSave, 
                 <div className="p-6 overflow-y-auto flex-grow">
                    {activeTab === 'profiles' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                           <ProfileEditor profile={profiles.her} onChange={handleProfileChange} personKey="her" unitSystem={settings.unitSystem} />
-                           <ProfileEditor profile={profiles.his} onChange={handleProfileChange} personKey="his" unitSystem={settings.unitSystem} />
+                           <ProfileEditor 
+                               profile={profiles.her} 
+                               onChange={(field, value) => handleProfileChange('her', field, value)} 
+                               personKey="her" 
+                               unitSystem={settings.unitSystem} 
+                           />
+                           <ProfileEditor 
+                               profile={profiles.his} 
+                               onChange={(field, value) => handleProfileChange('his', field, value)} 
+                               personKey="his" 
+                               unitSystem={settings.unitSystem} 
+                           />
                         </div>
                    )}
                    {activeTab === 'app' && (
                        <div>
                            <h3 className="text-xl font-bold mb-4">Measurement Units</h3>
                            <div className="flex items-center space-x-4">
-                               <label className="flex items-center">
-                                   <input type="radio" name="unit" value="imperial" checked={settings.unitSystem === 'imperial'} onChange={() => setSettings(s => ({...s, unitSystem: 'imperial'}))} />
+                               <label className="flex items-center cursor-pointer">
+                                   <input type="radio" name="unit" value="imperial" checked={settings.unitSystem === 'imperial'} onChange={() => setSettings(s => ({...s, unitSystem: 'imperial'}))} className="cursor-pointer" />
                                    <span className="ml-2">Imperial (lbs, ft, in)</span>
                                </label>
-                               <label className="flex items-center">
-                                   <input type="radio" name="unit" value="metric" checked={settings.unitSystem === 'metric'} onChange={() => setSettings(s => ({...s, unitSystem: 'metric'}))} />
+                               <label className="flex items-center cursor-pointer">
+                                   <input type="radio" name="unit" value="metric" checked={settings.unitSystem === 'metric'} onChange={() => setSettings(s => ({...s, unitSystem: 'metric'}))} className="cursor-pointer" />
                                    <span className="ml-2">Metric (kg, cm)</span>
                                </label>
                            </div>
